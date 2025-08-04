@@ -5,6 +5,7 @@
 #include <SD_MMC.h>
 #include "audio_recording.h"
 #include "deepgram_transcription.h"
+#include "gemini_ai.h"
 
 // Custom SD_MMC pin definitions
 #define SD_MMC_CMD  35   // io35
@@ -106,6 +107,18 @@ void loop() {
         if (transcription.length() > 0) {
           Serial.println("🎉 SUCCESS: " + transcription);
           Serial.printf("⏱️ Processing time: %lu ms (%.1fs)\n", processing_time, processing_time / 1000.0);
+          
+          // Process transcription through Gemini AI
+          Serial.println("🤖 Asking Gemini AI...");
+          unsigned long ai_start_time = millis();
+          
+          String ai_response = Gemini_ProcessText(transcription);
+          
+          unsigned long ai_processing_time = millis() - ai_start_time;
+          
+          Serial.println("🧠 AI RESPONSE: " + ai_response);
+          Serial.printf("🤖 AI processing time: %lu ms (%.1fs)\n", ai_processing_time, ai_processing_time / 1000.0);
+          
         } else {
           Serial.println("⚠️ No transcript received");
           Serial.printf("⏱️ Processing time: %lu ms (%.1fs)\n", processing_time, processing_time / 1000.0);
@@ -117,6 +130,9 @@ void loop() {
 
     // Deepgram Keep Alive (re-connecting when needed) 
     Deepgram_KeepAlive();
+    
+    // Gemini AI Keep Alive (re-connecting when needed)
+    Gemini_KeepAlive();
   }
 
   delay(10);
