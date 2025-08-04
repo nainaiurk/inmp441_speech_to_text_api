@@ -64,3 +64,11 @@ String Gemini_ProcessText(String input_text)
     return "Connection failed";
   }
 }
+
+// ----------------------------------------------------------------------------------------------------------------------------
+
+void Gemini_KeepAlive()
+{
+  // Simple keep-alive function - no complex connection management needed with HTTPClient
+  // HTTPClient handles connection lifecycle automatically
+}
